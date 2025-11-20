@@ -28,9 +28,9 @@ const sideMenu = document.getElementById("sideMenu");
 const overlay = document.getElementById("overlay");
 const clearBtn = document.getElementById("clearBtn");
 
-// Searchbar and clock elements
+// hero and clock elements
 const searchInput = document.getElementById("searchInput");
-const searchbar = document.getElementById("searchbar");
+const hero = document.getElementById("hero");
 const clock = document.getElementById("clock");
 
 let data = null;
@@ -112,13 +112,6 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-setInterval(() => {
-    if (!searchInput.value) {
-        searchInput.focus();
-        searchInput.select();
-    }
-}, 10);
-
 // === Clear Local Data ===
 clearBtn.addEventListener("click", () => {
     const confirmClear = confirm("Clear all locally saved data?");
@@ -168,31 +161,21 @@ const bookmarksFile = document.getElementById("bookmarksFile");
 loadBookmarksBtn.addEventListener("click", () => bookmarksFile.click());
 bookmarksFile.addEventListener("change", handleBookmarksUpload);
 
-/* === Toggle Bookmark Visibility === */
-const toggleBookmarksBtn = document.getElementById("toggleBookmarksBtn");
-
 function showBookmarks() {
     container.classList.remove("hidden");
-    toggleBookmarksBtn.classList.add("border-radius-container");
-    toggleBookmarksBtn.classList.remove("border-radius");
-    toggleBookmarksBtn.style.display = "block";
-    searchbar.classList.remove("search-bar-margin");
     clock.style.display = "none";
+    hero.classList.remove("hero-top");
 }
 
 function hideBookmarks() {
     container.classList.add("hidden");
-    toggleBookmarksBtn.classList.add("border-radius");
-    toggleBookmarksBtn.style.display = "none";
-    searchbar.classList.add("search-bar-margin");
     clock.style.display = "block";
+    hero.classList.add("hero-top");
 }
 
 function toggleBookmarks() {
     container.classList.contains("hidden") ? showBookmarks() : hideBookmarks();
 }
-
-toggleBookmarksBtn.addEventListener("click", toggleBookmarks);
 
 // When page first loads, hide the bookmarks grid
 window.addEventListener("DOMContentLoaded", () => {
@@ -597,7 +580,7 @@ function showTime() {
     m = m < 10 ? "0" + m : m;
     s = s < 10 ? "0" + s : s;
 
-    var time = h + ":" + m + ":" + s + " ";
+    var time = h + ":" + m + ":" + s;
     clock.innerText = time;
     clock.textContent = time;
 
