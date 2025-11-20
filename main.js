@@ -62,8 +62,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("DOMContentLoaded", () => {
     if (!window.location.hash) {
-        window.location = window.location + "#loaded";
-        window.location.reload();
+        setTimeout(() => {
+            window.location = window.location + "#loaded";
+            window.location.reload();
+        }, 100);
     }
 });
 
