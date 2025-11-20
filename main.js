@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             window.location = window.location + "#loaded";
             window.location.reload();
-        }, 100);
+        }, 1000);
     }
 });
 
