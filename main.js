@@ -60,6 +60,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+window.addEventListener("DOMContentLoaded", () => {
+    if (!window.location.hash) {
+        window.location = window.location + "#loaded";
+        window.location.reload();
+    }
+});
+
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowUp") {
         navigateLinks(-1);
