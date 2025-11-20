@@ -316,17 +316,6 @@ ul.link-list {
     color: var(--color-danger-text);
 }
 
-/* === Footer === */
-footer {
-    background: var(--color-footer-bg);
-    text-align: center;
-    padding: 1rem;
-    border-top: 1px solid var(--color-border);
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    margin-top: auto;
-}
-
 /* === Modals === */
 .modal {
     position: fixed;
