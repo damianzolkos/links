@@ -18,20 +18,25 @@
       <!-- Slide‑out side menu -->
       <aside class="side-menu" id="sideMenu">
         <div class="menu-content">
-          <button id="downloadBtn" class="add-btn">Download JSON</button>
-          <br>
-          <button id="loadBtn" class="add-btn">Load JSON</button>
-          <input type="file" id="fileInput" accept=".json" hidden />
-          <br>
-          <button id="loadBookmarksBtn" class="add-btn">Load HTML</button>
-          <input type="file" id="bookmarksFile" accept=".html" hidden />
-          <br>
-          <button id="clearBtn" class="add-btn danger-btn">Clear All Data</button>
-
-          <br>
-          <br>
-          <select id="artName"><option value="">Select art...</option></select>
-          <input type="checkbox" id="randomArt" checked>Random art</input>
+            <div class="menu-item">
+                <button id="downloadBtn" class="add-btn">Download JSON</button>
+            </div>
+            <div class="menu-item">
+                <button id="loadBtn" class="add-btn">Load JSON</button>
+                <input type="file" id="fileInput" accept=".json" hidden />
+            </div>
+            <div class="menu-item">
+                <button id="loadBookmarksBtn" class="add-btn">Load HTML</button>
+                <input type="file" id="bookmarksFile" accept=".html" hidden />
+            </div>
+            <div class="menu-item">
+                <button id="clearBtn" class="add-btn danger-btn">Clear All Data</button>
+            </div>
+            <div class="menu-item">
+                <p>Image</p>
+                <select class="add-btn" id="artName"><option value="">Select art...</option></select>
+                <input type="checkbox" id="randomArt" checked> random</input>
+            </div>
         </div>
       </aside>
       <!-- Overlay for when menu is open -->

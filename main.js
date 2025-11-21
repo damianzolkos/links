@@ -27,8 +27,8 @@ const menuToggle = document.getElementById("menuToggle");
 const sideMenu = document.getElementById("sideMenu");
 const overlay = document.getElementById("overlay");
 const clearBtn = document.getElementById("clearBtn");
-const artName = document.getElementById("artName");
-const randomArt = document.getElementById("randomArt");
+const artNameSelect = document.getElementById("artName");
+const randomArtCheckbox = document.getElementById("randomArt");
 
 // hero and clock elements
 const hero = document.getElementById("hero");
@@ -83,8 +83,8 @@ function loadArtFromLocal() {
     if (savedArtSettings) {
         let deserialized = JSON.parse(savedArtSettings);
         setArt(deserialized.artName, deserialized.random, false);
-        artName.value = deserialized.artName;
-        randomArt.checked = deserialized.random;
+    } else {
+        setArt(undefined, true, true);
     }
 }
 
@@ -98,13 +98,13 @@ window.addEventListener("DOMContentLoaded", () => {
     loadArtFromLocal();
 });
 
-artName.addEventListener("change", () => {
-    setArt(artName.value, false, true);
-    randomArt.checked = false;
+artNameSelect.addEventListener("change", () => {
+    setArt(artNameSelect.value, false, true);
+    randomArtCheckbox.checked = false;
 });
 
-randomArt.addEventListener("change", () => {
-    setArt(artName.value, true, true);
+randomArtCheckbox.addEventListener("change", () => {
+    setArt(artNameSelect.value, true, true);
 });
 
 function saveArtSettingsToLocal() {
@@ -118,13 +118,17 @@ const setArt = (artName, random, save) => {
     const img = document.createElement("img");
 
     if (random) {
-        img.src =
+        let image =
             artSettings.images[
                 Math.floor(Math.random() * artSettings.images.length)
-            ].url;
+            ];
+        img.src = image.url;
+        randomArtCheckbox.checked = true;
     } else {
         if (!artName) return;
         img.src = artSettings.images.filter((x) => x.name === artName)[0].url;
+        artNameSelect.value = artName;
+        randomArtCheckbox.checked = false;
     }
 
     art.innerHTML = "";

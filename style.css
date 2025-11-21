@@ -416,10 +416,24 @@ ul.link-list {
     right: 0;
 }
 
-.side-menu button,
+.menu-item {
+    margin: 10px 0px;
+}
+
+.menu-item button,
 select {
     min-width: 100%;
 }
+
+.menu-item .add-btn {
+    padding: 5px 0px;
+}
+
+.menu-item p,
+input {
+    color: var(--color-text-muted);
+}
+
 /* === Overlay behind side menu === */
 .overlay {
     position: fixed;
