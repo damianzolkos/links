@@ -34,9 +34,10 @@ const randomArtCheckbox = document.getElementById("randomArt");
 const hero = document.getElementById("hero");
 const clock = document.getElementById("clock");
 const searchInput = document.getElementById("searchInput");
-const art = document.getElementById("art");
 const help = document.getElementById("help");
 const topContainer = document.getElementById("topcontainer");
+
+const LINKS_DATA_KEY = "linksData";
 
 let data = null;
 let currentData = null;
@@ -52,90 +53,10 @@ const helpText = `
 ' ' search the web
 `;
 
-const artSettings = {
-    randomArt: true,
-    images: [
-        {
-            name: "pink-cars",
-            url: "https://w.wallhaven.cc/full/k8/wallhaven-k881zd.jpg",
-        },
-        {
-            name: "blue-computers",
-            url: "https://w.wallhaven.cc/full/7j/wallhaven-7jp81o.jpg",
-        },
-        {
-            name: "japan-minimini",
-            url: "https://w.wallhaven.cc/full/e8/wallhaven-e88yjo.jpg",
-        },
-        {
-            name: "compic-painting",
-            url: "https://w.wallhaven.cc/full/9o/wallhaven-9oozpx.png",
-        },
-        {
-            name: "astronaut",
-            url: "https://w.wallhaven.cc/full/qr/wallhaven-qrrlzr.jpg",
-        },
-    ],
-};
-
-function loadArtFromLocal() {
-    const savedArtSettings = localStorage.getItem("artSettings");
-    if (savedArtSettings) {
-        let deserialized = JSON.parse(savedArtSettings);
-        setArt(deserialized.artName, deserialized.random, false);
-    } else {
-        setArt(undefined, true, true);
-    }
-}
-
 window.addEventListener("DOMContentLoaded", () => {
-    artSettings.images.forEach((image) => {
-        const option = document.createElement("option");
-        option.value = image.name;
-        option.textContent = image.name;
-        artName.appendChild(option);
-    });
-    loadArtFromLocal();
+    hideBookmarks();
+    setHelpText(helpText);
 });
-
-artNameSelect.addEventListener("change", () => {
-    setArt(artNameSelect.value, false, true);
-    randomArtCheckbox.checked = false;
-});
-
-randomArtCheckbox.addEventListener("change", () => {
-    setArt(artNameSelect.value, true, true);
-});
-
-function saveArtSettingsToLocal() {
-    localStorage.setItem(
-        "artSettings",
-        JSON.stringify({ artName: artName.value, random: randomArt.checked }),
-    );
-}
-
-const setArt = (artName, random, save) => {
-    const img = document.createElement("img");
-
-    if (random) {
-        let image =
-            artSettings.images[
-                Math.floor(Math.random() * artSettings.images.length)
-            ];
-        img.src = image.url;
-        randomArtCheckbox.checked = true;
-    } else {
-        if (!artName) return;
-        img.src = artSettings.images.filter((x) => x.name === artName)[0].url;
-        artNameSelect.value = artName;
-        randomArtCheckbox.checked = false;
-    }
-
-    art.innerHTML = "";
-    art.appendChild(img);
-
-    if (save) saveArtSettingsToLocal();
-};
 
 // === Toggle Menu ===
 menuToggle.addEventListener("click", () => {
@@ -148,13 +69,6 @@ overlay.addEventListener("click", () => {
     overlay.classList.remove("show");
 });
 
-window.addEventListener("DOMContentLoaded", () => {
-    if (searchInput) {
-        searchInput.focus();
-        searchInput.select();
-    }
-});
-
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowUp") {
         navigateLinks(-1);
@@ -163,6 +77,13 @@ document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowDown") {
         navigateLinks(1);
         e.preventDefault();
+    }
+});
+
+document.addEventListener("keydown", (e) => {
+    if (!searchInput.value) {
+        searchInput.focus();
+        searchInput.select();
     }
 });
 
@@ -200,34 +121,17 @@ function navigateLinks(direction) {
     }
 }
 
-document.addEventListener("keydown", (e) => {
-    if (!searchInput.value) {
-        searchInput.focus();
-        searchInput.select();
-    }
-});
-
-// === Clear Local Data ===
-clearBtn.addEventListener("click", () => {
-    const confirmClear = confirm("Clear all locally saved data?");
-    if (!confirmClear) return;
-    localStorage.removeItem("linksData");
-    data = { groups: [] };
-    currentData = JSON.parse(JSON.stringify(data));
-    renderGroups(data);
-});
-
-/* === Load from localStorage === */
-loadFromLocal();
-
 function loadFromLocal() {
-    const saved = localStorage.getItem("linksData");
+    const saved = localStorage.getItem(LINKS_DATA_KEY);
     if (saved) {
         data = JSON.parse(saved);
         currentData = JSON.parse(JSON.stringify(data));
         renderGroups(data);
     }
 }
+
+/* === Load from localStorage === */
+loadFromLocal();
 
 /* === Load JSON manually === */
 loadBtn.addEventListener("click", () => fileInput.click());
@@ -249,6 +153,16 @@ fileInput.addEventListener("change", (e) => {
     reader.readAsText(file);
 });
 
+// === Clear Local Data ===
+clearBtn.addEventListener("click", () => {
+    const confirmClear = confirm("Clear all locally saved data?");
+    if (!confirmClear) return;
+    localStorage.removeItem(LINKS_DATA_KEY);
+    data = { groups: [] };
+    currentData = JSON.parse(JSON.stringify(data));
+    renderGroups(data);
+});
+
 // === Load Chrome bookmarks ===
 const loadBookmarksBtn = document.getElementById("loadBookmarksBtn");
 const bookmarksFile = document.getElementById("bookmarksFile");
@@ -259,35 +173,30 @@ bookmarksFile.addEventListener("change", handleBookmarksUpload);
 function showBookmarks() {
     container.style.display = "block";
     clock.style.display = "none";
-    art.style.display = "none";
     help.style.display = "none";
     hero.classList.remove("hero-top");
     topContainer.classList.remove("top-container");
+
+    art.style.display = "none";
 }
 
 function hideBookmarks() {
     container.style.display = "none";
     clock.style.display = "block";
-    art.style.display = "flex";
     help.style.display = "flex";
     hero.classList.add("hero-top");
     topContainer.classList.add("top-container");
+
+    art.style.display = "flex";
 }
 
 function toggleBookmarks() {
     container.classList.contains("hidden") ? showBookmarks() : hideBookmarks();
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    hideBookmarks();
-
-    // art
-
-    setArt("", false);
-
-    // help
-    help.innerHTML = `<code>${helpText.trim()}</code>`;
-});
+function setHelpText(text) {
+    help.innerHTML = `<code>${text.trim()}</code>`;
+}
 
 function handleBookmarksUpload(e) {
     const file = e.target.files[0];
@@ -399,7 +308,7 @@ function stripHelpers(obj) {
 function saveToLocal() {
     if (!data) return;
     const cleanData = stripHelpers(data);
-    localStorage.setItem("linksData", JSON.stringify(cleanData));
+    localStorage.setItem(LINKS_DATA_KEY, JSON.stringify(cleanData));
 }
 
 /* === Render Groups === */
