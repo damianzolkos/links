@@ -1,9 +1,10 @@
 const art = document.getElementById("art");
+const artNameSelect = document.getElementById("artName");
+const randomArtCheckbox = document.getElementById("randomArt");
 
 const ART_SETTINGS_KEY = "artSettings";
 
-const artSettings = {
-    randomArt: true,
+const artOptions = {
     images: [
         {
             name: "pink-cars",
@@ -39,13 +40,15 @@ function loadArtFromLocal() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    artSettings.images.forEach((image) => {
+    artOptions.images.forEach((image) => {
         const option = document.createElement("option");
         option.value = image.name;
         option.textContent = image.name;
         artName.appendChild(option);
     });
+
     loadArtFromLocal();
+    loadArtFromRemote();
 });
 
 artNameSelect.addEventListener("change", () => {
@@ -57,6 +60,11 @@ randomArtCheckbox.addEventListener("change", () => {
     setArt(artNameSelect.value, true, true);
 });
 
+function saveArtSettings() {
+    saveArtSettingsToLocal();
+    saveArtSettingsToRemote();
+}
+
 function saveArtSettingsToLocal() {
     localStorage.setItem(
         ART_SETTINGS_KEY,
@@ -64,19 +72,50 @@ function saveArtSettingsToLocal() {
     );
 }
 
+function saveArtSettingsToRemote() {
+    if (!remoteBaseUrl) return;
+
+    fetch(`${remoteBaseUrl}/art`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            artName: artName.value,
+            random: randomArt.checked,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+}
+
+function loadArtFromRemote() {
+    if (!remoteBaseUrl) return;
+
+    fetch(`${remoteBaseUrl}/art`)
+        .then((response) => response.json())
+        .then((data) => {
+            setArt(data.artName, data.random, false);
+        })
+        .catch((error) => console.error(error));
+
+    saveArtSettingsToLocal();
+}
+
 const setArt = (artName, random, save) => {
     const img = document.createElement("img");
 
     if (random) {
         let image =
-            artSettings.images[
-                Math.floor(Math.random() * artSettings.images.length)
+            artOptions.images[
+                Math.floor(Math.random() * artOptions.images.length)
             ];
         img.src = image.url;
         randomArtCheckbox.checked = true;
     } else {
         if (!artName) return;
-        img.src = artSettings.images.filter((x) => x.name === artName)[0].url;
+        img.src = artOptions.images.filter((x) => x.name === artName)[0].url;
         artNameSelect.value = artName;
         randomArtCheckbox.checked = false;
     }
@@ -84,5 +123,5 @@ const setArt = (artName, random, save) => {
     art.innerHTML = "";
     art.appendChild(img);
 
-    if (save) saveArtSettingsToLocal();
+    if (save) saveArtSettings();
 };

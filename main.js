@@ -27,8 +27,10 @@ const loadBtn = document.getElementById("loadBtn");
 const fileInput = document.getElementById("fileInput");
 const downloadBtn = document.getElementById("downloadBtn");
 const clearBtn = document.getElementById("clearBtn");
-const artNameSelect = document.getElementById("artName");
-const randomArtCheckbox = document.getElementById("randomArt");
+const remoteServerAddressInput = document.getElementById("remoteServerAddress");
+const remoteServerAddressSaveButton = document.getElementById(
+    "remoteServerAddressSave",
+);
 
 // hero and clock elements
 const hero = document.getElementById("hero");
@@ -38,7 +40,9 @@ const help = document.getElementById("help");
 const topContainer = document.getElementById("topcontainer");
 
 const LINKS_DATA_KEY = "linksData";
+const REMOTE_SERVER_ADDRESS_SETTING_KEY = "remoteServerAddress";
 
+let remoteBaseUrl = undefined;
 let data = null;
 let currentData = null;
 let currentGroup = null;
@@ -81,11 +85,25 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
+    if (e.srcElement === remoteServerAddressInput) {
+        return;
+    }
+
     if (!searchInput.value) {
         searchInput.focus();
         searchInput.select();
     }
 });
+
+remoteServerAddressSaveButton.addEventListener("click", () => {
+    console.log("Saving remote server address");
+    saveRemoteServerAddress();
+});
+
+/* === Load from localStorage === */
+loadRemoteServerAddressFromLocal();
+loadLinksFromLocal();
+loadLinksFromRemote();
 
 function navigateLinks(direction) {
     const links = Array.from(document.querySelectorAll(".link-item"));
@@ -121,7 +139,7 @@ function navigateLinks(direction) {
     }
 }
 
-function loadFromLocal() {
+function loadLinksFromLocal() {
     const saved = localStorage.getItem(LINKS_DATA_KEY);
     if (saved) {
         data = JSON.parse(saved);
@@ -129,9 +147,6 @@ function loadFromLocal() {
         renderGroups(data);
     }
 }
-
-/* === Load from localStorage === */
-loadFromLocal();
 
 /* === Load JSON manually === */
 loadBtn.addEventListener("click", () => fileInput.click());
@@ -144,6 +159,7 @@ fileInput.addEventListener("change", (e) => {
         try {
             data = JSON.parse(event.target.result);
             saveToLocal();
+            saveLinksToRemote();
             renderGroups(data);
         } catch {
             // TODO: Show some error message to the user
@@ -214,6 +230,7 @@ function handleBookmarksUpload(e) {
             currentData = JSON.parse(JSON.stringify(data));
 
             saveToLocal();
+            saveLinksToRemote();
             renderGroups(data);
             alert("Bookmarks imported successfully!");
         } catch (err) {
@@ -645,6 +662,7 @@ confirmRemoveGroup.addEventListener("click", () => {
     }
 
     saveToLocal();
+    saveLinksToRemote();
     renderGroups(data, { showEmpty: true, expandAll: true });
     closeRemoveGroupModal();
 });
@@ -676,6 +694,7 @@ confirmRemoveLink.addEventListener("click", () => {
     if (group) {
         group.links.splice(linkIndex, 1);
         saveToLocal();
+        saveLinksToRemote();
         renderGroups(data, { showEmpty: true, expandAll: true });
     }
 
@@ -715,6 +734,7 @@ linkForm.addEventListener("submit", (e) => {
     if (group) {
         group.links.push(newLink);
         saveToLocal();
+        saveLinksToRemote();
         renderGroups(data, { expandAll: true, showEmpty: true });
     }
     closeLinkModal();
@@ -742,6 +762,7 @@ groupForm.addEventListener("submit", (e) => {
     }
     data.groups.push({ name, links: [], groups: [], id: uuidv4() });
     saveToLocal();
+    saveLinksToRemote();
     renderGroups(data, { expandAll: true, showEmpty: true });
     closeGroupModal();
 });
@@ -816,4 +837,58 @@ function uuidv4() {
             (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
         ).toString(16),
     );
+}
+
+remoteServerAddressInput.addEventListener("change", () => {
+    remoteBaseUrl = remoteServerAddressInput.value;
+});
+
+function loadRemoteServerAddressFromLocal() {
+    const storedAddress = localStorage.getItem(
+        REMOTE_SERVER_ADDRESS_SETTING_KEY,
+    );
+    if (storedAddress) {
+        remoteServerAddressInput.value = storedAddress;
+        remoteBaseUrl = storedAddress;
+    }
+}
+
+function saveRemoteServerAddress() {
+    const enteredAddress = remoteServerAddressInput.value;
+    if (enteredAddress) {
+        localStorage.setItem(REMOTE_SERVER_ADDRESS_SETTING_KEY, enteredAddress);
+        remoteBaseUrl = enteredAddress;
+    }
+}
+
+function loadLinksFromRemote() {
+    if (!remoteBaseUrl) return;
+
+    remoteServerAddressInput.value = remoteBaseUrl;
+
+    fetch(`${remoteBaseUrl}/links`)
+        .then((response) => response.json())
+        .then((data) => {
+            data = data;
+            currentData = JSON.parse(JSON.stringify(data));
+            saveToLocal();
+        })
+        .catch((error) => console.error(error));
+}
+
+function saveLinksToRemote() {
+    if (!remoteBaseUrl) return;
+
+    const cleanData = stripHelpers(data);
+
+    fetch(`${remoteBaseUrl}/links`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cleanData),
+    })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
 }

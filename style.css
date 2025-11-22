@@ -347,7 +347,8 @@ ul.link-list {
     font-weight: 500;
 }
 
-.modal-content input {
+.modal-content,
+.menu-item input[type="text"] {
     width: 100%;
     padding: 0.5rem;
     margin-top: 0.3rem;
@@ -430,8 +431,8 @@ select {
     padding: 5px 0px;
 }
 
-.menu-item p,
-input {
+.menu-item p {
+    font-size: 0.8rem;
     color: var(--color-text-muted);
 }
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 # ==========================================
-# Homelab Dashboard Remote Build & Deploy
+# Links Sync App
+# Remote Build & Deploy
 # Copies files, builds Docker image remotely,
 # and runs the container on the remote host.
 # ==========================================
@@ -8,14 +9,14 @@
 set -e  # Exit on error
 
 # ---[ CONFIGURATION ]---
-IMAGE_NAME="links"
-CONTAINER_NAME="links"
+IMAGE_NAME="links-sync"
+CONTAINER_NAME="links-sync"
 REMOTE_USER="ubuntu"
 REMOTE_HOST="192.168.1.24"
 SSH_PORT="22"
-REMOTE_PATH="/home/${REMOTE_USER}/apps/links"
-LOCAL_PORT="80"
-REMOTE_WEB_PORT="8080"
+REMOTE_PATH="/home/${REMOTE_USER}/apps/links-sync"
+LOCAL_PORT="8080"
+REMOTE_WEB_PORT="7402"
 
 # ---[ HELPER FUNCTIONS ]---
 function info() {
@@ -33,7 +34,7 @@ info "Creating remote project directory"
 ssh -p "${SSH_PORT}" "${REMOTE_USER}@${REMOTE_HOST}" "mkdir -p ${REMOTE_PATH}"
 
 info "Copying local files to remote machine"
-scp -P "${SSH_PORT}" index.html style.css main.js favicon.ico Dockerfile "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/"
+scp -P "${SSH_PORT}" Program.cs sync.csproj appsettings.json Dockerfile "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/"
 
 info "Building Docker image on remote host"
 ssh -p "${SSH_PORT}" "${REMOTE_USER}@${REMOTE_HOST}" "
@@ -49,8 +50,8 @@ ssh -p "${SSH_PORT}" "${REMOTE_USER}@${REMOTE_HOST}" "
 
 info "Starting container on remote host"
 ssh -p "${SSH_PORT}" "${REMOTE_USER}@${REMOTE_HOST}" "
-  docker run -d --name ${CONTAINER_NAME} -p ${REMOTE_WEB_PORT}:${LOCAL_PORT} ${IMAGE_NAME}
+  docker run -d --name ${CONTAINER_NAME} -p ${REMOTE_WEB_PORT}:${LOCAL_PORT} -v ${REMOTE_PATH}/config:/app/config ${IMAGE_NAME}
 "
 
 success "Deployment complete!"
-echo "Your dashboard is available at: http://${REMOTE_HOST}:${REMOTE_WEB_PORT}"
+echo "Your app is available at: http://${REMOTE_HOST}:${REMOTE_WEB_PORT}"
