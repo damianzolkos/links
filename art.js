@@ -67,8 +67,18 @@ let defaultClockColor = clockElement.style.color;
 function setClockColor(value) {
     if (value) {
         let color = artOptions.images[currentArtIndex].color;
+        rootElement.style.setProperty("--color-accent", color);
+        rootElement.style.setProperty(
+            "--color-accent-hover",
+            darkenColorRGB(color, 20),
+        );
         clockElement.style.setProperty("color", color);
     } else {
+        rootElement.style.setProperty("--color-accent", defaultClockColor);
+        rootElement.style.setProperty(
+            "--color-accent-hover",
+            darkenColorRGB(defaultClockColor, 20),
+        );
         clockElement.style.setProperty("color", defaultClockColor);
     }
 }
@@ -82,8 +92,8 @@ function loadArtFromLocal() {
     const savedArtSettings = localStorage.getItem(ART_SETTINGS_KEY);
     if (savedArtSettings) {
         let deserialized = JSON.parse(savedArtSettings);
-        clockColorCheckbox.checked = deserialized.clockColorFromArt;
         setArt(deserialized.artName, deserialized.random, false);
+        setClockColorSetting(deserialized.clockColorFromArt);
     } else {
         setArt(undefined, true, true);
     }
@@ -104,6 +114,7 @@ window.addEventListener("DOMContentLoaded", () => {
 artNameSelect.addEventListener("change", () => {
     setArt(artNameSelect.value, false, true);
     randomArtCheckbox.checked = false;
+    setClockColorSetting(clockColorCheckbox.checked);
 });
 
 randomArtCheckbox.addEventListener("change", (e) => {
@@ -191,3 +202,41 @@ const setArt = (artName, random, save) => {
 
     if (save) saveArtSettings();
 };
+
+function darkenColorRGB(hexColor, darkenAmount) {
+    // Convert hex to RGB
+    let rgb = hexToRGB(hexColor);
+
+    if (!rgb) {
+        return null; // Invalid hex color
+    }
+
+    // Darken each component (R, G, B)
+    let r = Math.max(0, Math.min(255, rgb.r - darkenAmount));
+    let g = Math.max(0, Math.min(255, rgb.g - darkenAmount));
+    let b = Math.max(0, Math.min(255, rgb.b - darkenAmount));
+
+    // Convert RGB back to hex
+    return RGBToHex(r, g, b);
+}
+
+function hexToRGB(hex) {
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) {
+        return null;
+    }
+    return {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+    };
+}
+
+function RGBToHex(r, g, b) {
+    const componentToHex = (c) => {
+        const hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    };
+
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
