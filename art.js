@@ -30,6 +30,22 @@ const artOptions = {
             name: "hacker",
             url: "https://w.wallhaven.cc/full/3q/wallhaven-3qqqkv.jpg",
         },
+        {
+            name: "hacker-2",
+            url: "https://w.wallhaven.cc/full/vp/wallhaven-vpppml.jpg",
+        },
+        {
+            name: "future-cartoon",
+            url: "https://w.wallhaven.cc/full/5y/wallhaven-5yy737.jpg",
+        },
+        {
+            name: "retro-computers",
+            url: "https://w.wallhaven.cc/full/zp/wallhaven-zpxjjo.jpg",
+        },
+        {
+            name: "japan-town",
+            url: "https://w.wallhaven.cc/full/8g/wallhaven-8gxwwk.jpg",
+        },
     ],
 };
 
