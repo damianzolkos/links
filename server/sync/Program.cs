@@ -24,7 +24,7 @@ app.UseCors("AllowAllOrigins");
 // ----------------------------------------------------------
 
 Data? links = null;
-ArtSettings? artSettings = null;
+ThemeSettings? themeSettings = null;
 
 const string CONFIG_DIR_PATH = "config";
 if (!Directory.Exists(CONFIG_DIR_PATH))
@@ -33,7 +33,7 @@ if (!Directory.Exists(CONFIG_DIR_PATH))
 }
 
 const string linksDataFilePath = $"{CONFIG_DIR_PATH}/linksData.json";
-const string artSettingsFilePath = $"{CONFIG_DIR_PATH}/artSettings.json";
+const string themeSettingsFilePath = $"{CONFIG_DIR_PATH}/themeSettings.json";
 
 void SaveLinksData()
 {
@@ -54,27 +54,27 @@ void LoadLinksData()
     links = JsonSerializer.Deserialize<Data>(jsonString);
 }
 
-void SaveArtSettings()
+void SaveThemeSettings()
 {
     var options = new JsonSerializerOptions { WriteIndented = true };
 
-    string jsonString = JsonSerializer.Serialize(artSettings, options);
-    File.WriteAllText(artSettingsFilePath, jsonString);
+    string jsonString = JsonSerializer.Serialize(themeSettings, options);
+    File.WriteAllText(themeSettingsFilePath, jsonString);
 }
 
-void LoadArtSettings()
+void LoadThemeSettings()
 {
-    if (!File.Exists(artSettingsFilePath))
+    if (!File.Exists(themeSettingsFilePath))
     {
         return;
     }
 
-    string jsonString = File.ReadAllText(artSettingsFilePath);
-    artSettings = JsonSerializer.Deserialize<ArtSettings>(jsonString);
+    string jsonString = File.ReadAllText(themeSettingsFilePath);
+    themeSettings = JsonSerializer.Deserialize<ThemeSettings>(jsonString);
 }
 
 LoadLinksData();
-LoadArtSettings();
+LoadThemeSettings();
 
 app.MapGet("/links", () =>
 {
@@ -89,18 +89,18 @@ app.MapPost("/links", ([FromBody] Data data) => {
     return Results.Ok(links);
 });
 
-app.MapGet("/art", () =>
+app.MapGet("/theme", () =>
 {
-    Console.WriteLine("Sent art settings");
-    return artSettings;
+    Console.WriteLine("Sent theme settings");
+    return themeSettings;
 });
 
-app.MapPost("/art", ([FromBody] ArtSettings settings) =>
+app.MapPost("/theme", ([FromBody] ThemeSettings settings) =>
 {
-    Console.WriteLine("Received art settings");
-    artSettings = settings;
-    SaveArtSettings();
-    return Results.Ok(artSettings);
+    Console.WriteLine("Received theme settings");
+    themeSettings = settings;
+    SaveThemeSettings();
+    return Results.Ok(themeSettings);
 });
 
 app.Run();
@@ -121,8 +121,8 @@ public class Data {
     public List<Group>? Groups { get; set; }
 }
 
-public class ArtSettings {
-    public bool Random { get; set; }
+public class ThemeSettings {
+    public bool RandomArt { get; set; }
     public string? ArtName { get; set; }
-    public bool ClockColorFromArt { get; set; }
+    public bool AccentColorFromArt { get; set; }
 }
