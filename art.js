@@ -15,11 +15,7 @@ const artOptions = {
             url: "https://w.wallhaven.cc/full/7j/wallhaven-7jp81o.jpg",
         },
         {
-            name: "japan-minimini",
-            url: "https://w.wallhaven.cc/full/e8/wallhaven-e88yjo.jpg",
-        },
-        {
-            name: "compic-painting",
+            name: "girl-painting",
             url: "https://w.wallhaven.cc/full/9o/wallhaven-9oozpx.png",
         },
         {
