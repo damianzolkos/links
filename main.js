@@ -957,10 +957,11 @@ function loadLinksFromRemote() {
 
     fetch(`${remoteBaseUrl}/links`)
         .then((response) => response.json())
-        .then((data) => {
-            data = data;
-            currentData = JSON.parse(JSON.stringify(data));
+        .then((remoteData) => {
+            data = remoteData;
+            currentData = JSON.parse(JSON.stringify(remoteData));
             saveToLocal();
+            renderGroups(data);
         })
         .catch((error) => console.error(error));
 }
