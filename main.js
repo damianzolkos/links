@@ -586,6 +586,7 @@ function filterDataTree(source, query) {
 
         if (nameMatch || matchedLinks.length || matchedChildren.length) {
             return {
+                id: g.id,
                 name: g.name,
                 links: matchedLinks,
                 groups: matchedChildren,
