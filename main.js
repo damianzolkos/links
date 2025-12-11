@@ -86,11 +86,11 @@ overlay.addEventListener("click", () => {
 
 // Move highlighted link with arrow keys
 document.addEventListener("keydown", (e) => {
-    if (e.key == "ArrowUp") {
+    if (e.key === "ArrowUp") {
         navigateLinks(-1);
         e.preventDefault();
     }
-    if (e.key == "ArrowDown") {
+    if (e.key === "ArrowDown") {
         if (!searchInput.value) {
             searchInput.value = BOOKMARKS_SEARCH_CHAR;
             handleSearch(searchInput.value);
@@ -134,7 +134,7 @@ document.addEventListener("keydown", (e) => {
     if (modalOpen) return;
 
     if (!searchInput.value || searchInput.value === BOOKMARKS_SEARCH_CHAR) {
-        if (e.key == "ArrowUp" || e.key == "ArrowDown") return;
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") return;
         searchInput.focus();
         searchInput.select();
     }
@@ -730,7 +730,7 @@ confirmRemoveGroup.addEventListener("click", () => {
     const { group, parent } = groupToDelete;
 
     function removeFromArray(arr, target) {
-        var group = arr.filter((x) => x.id == target.id)[0];
+        const group = arr.filter((x) => x.id === target.id)[0];
         if (group) {
             var idx = arr.indexOf(group);
             if (idx !== -1) arr.splice(idx, 1);
@@ -777,7 +777,7 @@ function closeRemoveLinkModal() {
 
 confirmRemoveLink.addEventListener("click", () => {
     const { groupId, linkIndex } = linkToDelete;
-    if (!groupId || linkIndex == null) return;
+    if (!groupId || linkIndex === null) return;
 
     let group = findGroupRecursively(data, groupId);
     if (group) {
