@@ -561,8 +561,8 @@ select {
 }
 
 .search-bar input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(122, 162, 184, 0.2);
+    border-color: var(--color-border);
+    background: var(--color-bg);
 }
 
 .art {
