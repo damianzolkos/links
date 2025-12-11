@@ -683,17 +683,12 @@ function isCtrlPressed(event) {
 }
 
 function showTime() {
-    var date = new Date();
-    var h = date.getHours();
-    var m = date.getMinutes();
-    var s = date.getSeconds();
+    const date = new Date();
+    const h = String(date.getHours()).padStart(2, "0");
+    const m = String(date.getMinutes()).padStart(2, "0");
+    const s = String(date.getSeconds()).padStart(2, "0");
 
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-
-    var time = h + ":" + m + ":" + s;
-    clock.innerText = time;
+    const time = `${h}:${m}:${s}`;
     clock.textContent = time;
 
     setTimeout(showTime, 1000);
