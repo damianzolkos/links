@@ -251,10 +251,6 @@ function hideBookmarks() {
     art.style.display = "flex";
 }
 
-function toggleBookmarks() {
-    container.classList.contains("hidden") ? showBookmarks() : hideBookmarks();
-}
-
 function setHelpText(text) {
     const code = document.createElement("code");
     code.textContent = text.trim();
