@@ -378,7 +378,7 @@ function saveToLocal() {
 function renderGroups(data, { expandAll = false, showEmpty = false } = {}) {
     container.innerHTML = "";
 
-    if (!data || !data.groups || !data.groups.length === 0) {
+    if (!data || !data.groups || data.groups.length === 0) {
         container.innerHTML =
             "<p style='opacity:0.7'>No bookmarks loaded yet.</p>";
         return;
