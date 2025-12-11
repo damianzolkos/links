@@ -69,7 +69,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const option = document.createElement("option");
         option.value = image.name;
         option.textContent = image.name;
-        artName.appendChild(option);
+        artNameSelect.appendChild(option);
     });
 
     loadThemeSettingsFromLocal();
@@ -111,8 +111,8 @@ function saveThemeSettingsToLocal() {
     localStorage.setItem(
         THEME_SETTINGS_KEY,
         JSON.stringify({
-            artName: artName.value,
-            randomArt: randomArt.checked,
+            artName: artNameSelect.value,
+            randomArt: randomArtCheckbox.checked,
             accentColorFromArt: accentColorCheckbox.checked,
         }),
     );
@@ -127,8 +127,8 @@ function saveThemeSettingsToRemote() {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            artName: artName.value,
-            randomArt: randomArt.checked,
+            artName: artNameSelect.value,
+            randomArt: randomArtCheckbox.checked,
             accentColorFromArt: accentColorCheckbox.checked,
         }),
     })
