@@ -1,5 +1,12 @@
 # Agent Guidelines
 
+## Git Workflow
+- **NEVER commit or push without explicit user instruction**
+- Wait for clear commands like "commit", "push", or "commit and push"
+- If user says "commit" only, do not push
+- If user says "push" only, push existing commits
+- Always confirm what action was taken
+
 ## Project Structure
 - Frontend: Vanilla JS/HTML/CSS (no build step, no framework)
 - Backend: .NET 10 minimal API in `server/sync/`
