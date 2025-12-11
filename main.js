@@ -256,7 +256,10 @@ function toggleBookmarks() {
 }
 
 function setHelpText(text) {
-    help.innerHTML = `<code>${text.trim()}</code>`;
+    const code = document.createElement("code");
+    code.textContent = text.trim();
+    help.innerHTML = "";
+    help.appendChild(code);
 }
 
 function handleBookmarksUpload(e) {
