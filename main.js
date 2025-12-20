@@ -946,6 +946,9 @@ function saveRemoteServerAddress() {
     if (enteredAddress) {
         localStorage.setItem(REMOTE_SERVER_ADDRESS_SETTING_KEY, enteredAddress);
         remoteBaseUrl = enteredAddress;
+    } else {
+        localStorage.removeItem(REMOTE_SERVER_ADDRESS_SETTING_KEY);
+        remoteBaseUrl = undefined;
     }
 }
 
