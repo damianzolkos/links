@@ -154,38 +154,7 @@ function saveThemeSettingsToLocal() {
     );
 }
 
-function saveThemeSettingsToRemote() {
-    if (!remoteBaseUrl) return;
 
-    fetch(`${remoteBaseUrl}/theme`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            artName: artNameSelect.value,
-            randomArt: randomArtCheckbox.checked,
-            accentColorFromArt: accentColorCheckbox.checked,
-            clockFont: clockFontSelect.value,
-        }),
-    })
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
-}
-
-function loadThemeSettingsFromRemote() {
-    if (!remoteBaseUrl) return;
-
-    fetch(`${remoteBaseUrl}/theme`)
-        .then((response) => response.json())
-        .then((data) => {
-            setArt(data.artName, data.randomArt, false);
-            setAccentColorSetting(data.accentColorFromArt);
-            setClockFont(data.clockFont, false);
-            saveThemeSettingsToLocal();
-        })
-        .catch((error) => console.error(error));
-}
 
 const setArt = (artName, random, save) => {
     const img = document.createElement("img");

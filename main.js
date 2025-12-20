@@ -949,35 +949,4 @@ function saveRemoteServerAddress() {
     }
 }
 
-function loadLinksFromRemote() {
-    if (!remoteBaseUrl) return;
 
-    remoteServerAddressInput.value = remoteBaseUrl;
-
-    fetch(`${remoteBaseUrl}/links`)
-        .then((response) => response.json())
-        .then((remoteData) => {
-            data = remoteData;
-            currentData = JSON.parse(JSON.stringify(remoteData));
-            saveToLocal();
-            renderGroups(data);
-        })
-        .catch((error) => console.error(error));
-}
-
-function saveLinksToRemote() {
-    if (!remoteBaseUrl) return;
-
-    const cleanData = stripHelpers(data);
-
-    fetch(`${remoteBaseUrl}/links`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cleanData),
-    })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error(error));
-}
